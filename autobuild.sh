@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+
+# 如果没有build目录，创建该目录
+if [ ! -d `pwd`/build ]; then
+    mkdir `pwd`/build
+fi
+
+rm -rf `pwd`/build/*
+
+cd `pwd`/build &&
+    cmake .. &&
+    make
+# 回到项目根目录
+cd ..
+# 把头文件拷贝到 /usr/include/yzpmuduo  so库拷贝到 /usr/lib    PATH
+if [ ! -d /usr/include/yzpmuduo ]; then 
+    mkdir /usr/include/yzpmuduo
+fi
+
+for header in `ls *.h`
+do
+    cp $header /usr/include/yzpmuduo
+done
+
+cp `pwd`/lib/libyzpmuduo.so /usr/lib
+
+ldconfig
